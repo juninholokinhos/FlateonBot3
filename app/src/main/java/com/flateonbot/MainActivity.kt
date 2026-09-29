@@ -1,8 +1,10 @@
 package com.flateonbot
 
 import android.app.Activity
-import android.os.Bundle
+import android.content.Intent
 import android.graphics.Color
+import android.os.Bundle
+import android.provider.Settings
 import android.view.Gravity
 import android.widget.Button
 import android.widget.LinearLayout
@@ -18,7 +20,6 @@ class MainActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         mostrarTelaPrincipal()
     }
 
@@ -35,6 +36,9 @@ class MainActivity : Activity() {
         titulo.setTextColor(Color.BLACK)
         titulo.gravity = Gravity.CENTER
 
+        val acessibilidade = Button(this)
+        acessibilidade.text = "⚙ ATIVAR ACESSIBILIDADE"
+
         val criarRota = Button(this)
         criarRota.text = "CRIAR ROTA"
 
@@ -47,17 +51,27 @@ class MainActivity : Activity() {
         val parar = Button(this)
         parar.text = "■ PARAR"
 
+        acessibilidade.setOnClickListener {
+            abrirAcessibilidade()
+        }
+
         criarRota.setOnClickListener {
             mostrarTelaCriarRota()
         }
 
         layout.addView(titulo)
+        layout.addView(acessibilidade)
         layout.addView(criarRota)
         layout.addView(minhasRotas)
         layout.addView(iniciar)
         layout.addView(parar)
 
         setContentView(layout)
+    }
+
+    private fun abrirAcessibilidade() {
+        val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
+        startActivity(intent)
     }
 
     private fun mostrarTelaCriarRota() {

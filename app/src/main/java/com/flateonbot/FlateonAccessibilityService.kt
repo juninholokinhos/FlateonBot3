@@ -1,6 +1,8 @@
 package com.flateonbot
 
 import android.accessibilityservice.AccessibilityService
+import android.accessibilityservice.GestureDescription
+import android.graphics.Path
 import android.os.Handler
 import android.os.Looper
 import android.view.accessibility.AccessibilityEvent
@@ -17,6 +19,18 @@ class FlateonAccessibilityService : AccessibilityService() {
 
     private var executando = false
 
+    /*
+     * Posição provisória do joystick.
+     *
+     * Estes valores NÃO devem ser usados ainda
+     * como posição definitiva.
+     *
+     * Depois vamos descobrir a posição real
+     * do joystick no Flateon RPG.
+     */
+    private val joystickX = 200f
+    private val joystickY = 700f
+
     override fun onServiceConnected() {
         super.onServiceConnected()
 
@@ -24,21 +38,29 @@ class FlateonAccessibilityService : AccessibilityService() {
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
-        // Nenhuma ação automática ainda.
+        // Nenhuma ação automática aqui.
     }
 
     fun executarRota(rota: List<MovimentoRota>) {
 
         if (executando) {
+            Toast.makeText(
+                applicationContext,
+                "Rota já está executando",
+                Toast.LENGTH_SHORT
+            ).show()
+
             return
         }
 
         if (rota.isEmpty()) {
+
             Toast.makeText(
                 applicationContext,
                 "Rota vazia",
                 Toast.LENGTH_SHORT
             ).show()
+
             return
         }
 
@@ -71,11 +93,7 @@ class FlateonAccessibilityService : AccessibilityService() {
 
         val movimento = rota[indice]
 
-        Toast.makeText(
-            applicationContext,
-            movimento.direcao,
-            Toast.LENGTH_SHORT
-        ).show()
+        executarDirecao(movimento.direcao, movimento.duracao)
 
         handler.postDelayed(
             {
@@ -84,7 +102,70 @@ class FlateonAccessibilityService : AccessibilityService() {
                     indice + 1
                 )
             },
-            movimento.duracao
+            movimento.duracao + 100L
+        )
+    }
+
+    private fun executarDirecao(
+        direcao: String,
+        duracao: Long
+    ) {
+
+        val inicioX = joystickX
+        val inicioY = joystickY
+
+        val distancia = 120f
+
+        val fimX: Float
+        val fimY: Float
+
+        when (direcao) {
+
+            "CIMA" -> {
+                fimX = inicioX
+                fimY = inicioY - distancia
+            }
+
+            "BAIXO" -> {
+                fimX = inicioX
+                fimY = inicioY + distancia
+            }
+
+            "ESQUERDA" -> {
+                fimX = inicioX - distancia
+                fimY = inicioY
+            }
+
+            "DIREITA" -> {
+                fimX = inicioX + distancia
+                fimY = inicioY
+            }
+
+            else -> {
+                return
+            }
+        }
+
+        val path = Path()
+
+        path.moveTo(inicioX, inicioY)
+
+        path.lineTo(fimX, fimY)
+
+        val gesto = GestureDescription.Builder()
+            .addStroke(
+                GestureDescription.StrokeDescription(
+                    path,
+                    0,
+                    duracao
+                )
+            )
+            .build()
+
+        dispatchGesture(
+            gesto,
+            null,
+            null
         )
     }
 

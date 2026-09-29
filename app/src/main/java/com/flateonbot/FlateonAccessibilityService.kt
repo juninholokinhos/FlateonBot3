@@ -3,8 +3,6 @@ package com.flateonbot
 import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.GestureDescription
 import android.graphics.Path
-import android.os.Handler
-import android.os.Looper
 import android.view.accessibility.AccessibilityEvent
 import android.widget.Toast
 
@@ -15,111 +13,58 @@ class FlateonAccessibilityService : AccessibilityService() {
             private set
     }
 
-    private val handler = Handler(Looper.getMainLooper())
-
     private var executando = false
 
-    /*
-     * Centro aproximado do joystick
-     * identificado na imagem do jogo.
-     *
-     * Tela da imagem: 1600 x 720
-     */
+    // Centro aproximado do joystick na imagem enviada.
     private val joystickX = 160f
     private val joystickY = 565f
 
     override fun onServiceConnected() {
         super.onServiceConnected()
-
         instancia = this
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
-        // Nenhuma ação automática aqui.
+        // Nenhuma ação automática.
     }
 
     fun executarRota(rota: List<MovimentoRota>) {
 
         if (executando) {
-
             Toast.makeText(
                 applicationContext,
-                "Rota já está executando",
-                Toast.LENGTH_SHORT
+                "Teste já está executando",
+                Toast.LENGTH_LONG
             ).show()
-
             return
         }
 
         if (rota.isEmpty()) {
-
             Toast.makeText(
                 applicationContext,
                 "Rota vazia",
-                Toast.LENGTH_SHORT
+                Toast.LENGTH_LONG
             ).show()
-
             return
         }
 
         executando = true
 
-        Toast.makeText(
-            applicationContext,
-            "Bot iniciando movimentação",
-            Toast.LENGTH_SHORT
-        ).show()
-
-        executarMovimento(rota, 0)
-    }
-
-    private fun executarMovimento(
-        rota: List<MovimentoRota>,
-        indice: Int
-    ) {
-
-        if (!executando) {
-            return
-        }
-
-        if (indice >= rota.size) {
-
-            executando = false
-
-            Toast.makeText(
-                applicationContext,
-                "Rota finalizada",
-                Toast.LENGTH_SHORT
-            ).show()
-
-            return
-        }
-
-        val movimento = rota[indice]
+        val movimento = rota[0]
 
         Toast.makeText(
             applicationContext,
-            "Movimento: ${movimento.direcao}",
-            Toast.LENGTH_SHORT
+            "TESTE INICIADO: ${movimento.direcao}",
+            Toast.LENGTH_LONG
         ).show()
 
-        executarDirecao(
+        testarGesto(
             movimento.direcao,
             movimento.duracao
         )
-
-        handler.postDelayed(
-            {
-                executarMovimento(
-                    rota,
-                    indice + 1
-                )
-            },
-            movimento.duracao + 200L
-        )
     }
 
-    private fun executarDirecao(
+    private fun testarGesto(
         direcao: String,
         duracao: Long
     ) {
@@ -155,6 +100,15 @@ class FlateonAccessibilityService : AccessibilityService() {
             }
 
             else -> {
+
+                executando = false
+
+                Toast.makeText(
+                    applicationContext,
+                    "DIREÇÃO INVÁLIDA",
+                    Toast.LENGTH_LONG
+                ).show()
+
                 return
             }
         }
@@ -181,60 +135,71 @@ class FlateonAccessibilityService : AccessibilityService() {
             )
             .build()
 
-        dispatchGesture(
+        val enviado = dispatchGesture(
             gesto,
             object : GestureResultCallback() {
 
                 override fun onCompleted(
                     gestureDescription: GestureDescription?
                 ) {
+
+                    executando = false
+
                     Toast.makeText(
                         applicationContext,
                         "GESTO CONCLUÍDO: $direcao",
-                        Toast.LENGTH_SHORT
+                        Toast.LENGTH_LONG
                     ).show()
                 }
 
                 override fun onCancelled(
                     gestureDescription: GestureDescription?
                 ) {
+
+                    executando = false
+
                     Toast.makeText(
                         applicationContext,
                         "GESTO CANCELADO: $direcao",
-                        Toast.LENGTH_SHORT
+                        Toast.LENGTH_LONG
                     ).show()
                 }
             },
             null
         )
+
+        if (!enviado) {
+
+            executando = false
+
+            Toast.makeText(
+                applicationContext,
+                "ANDROID RECUSOU O GESTO",
+                Toast.LENGTH_LONG
+            ).show()
+        }
     }
 
     fun pararRota() {
 
         executando = false
 
-        handler.removeCallbacksAndMessages(null)
-
         Toast.makeText(
             applicationContext,
-            "Rota parada",
-            Toast.LENGTH_SHORT
+            "Teste parado",
+            Toast.LENGTH_LONG
         ).show()
     }
 
     override fun onInterrupt() {
 
-        pararRota()
-
+        executando = false
         instancia = null
     }
 
     override fun onDestroy() {
 
-        handler.removeCallbacksAndMessages(null)
-
         executando = false
-
         instancia = null
 
         super.onDestroy()

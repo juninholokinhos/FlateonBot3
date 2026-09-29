@@ -3,12 +3,10 @@ package com.flateonbot
 import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.GestureDescription
 import android.graphics.Path
-import android.os.Handler
-import android.os.Looper
-import android.util.DisplayMetrics
-import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
 import android.widget.Toast
+import android.os.Handler
+import android.os.Looper
 
 class FlateonAccessibilityService : AccessibilityService() {
 
@@ -20,6 +18,18 @@ class FlateonAccessibilityService : AccessibilityService() {
     private val handler = Handler(Looper.getMainLooper())
 
     private var executando = false
+
+    /*
+     * POSIÇÃO DO JOYSTICK IDENTIFICADA NA IMAGEM
+     *
+     * Tela: 1600 x 720
+     * Centro aproximado do joystick:
+     *
+     * X = 160
+     * Y = 565
+     */
+    private val joystickX = 160f
+    private val joystickY = 565f
 
     override fun onServiceConnected() {
         super.onServiceConnected()
@@ -34,6 +44,7 @@ class FlateonAccessibilityService : AccessibilityService() {
     fun executarRota(rota: List<MovimentoRota>) {
 
         if (executando) {
+
             Toast.makeText(
                 applicationContext,
                 "Rota já está executando",
@@ -44,6 +55,7 @@ class FlateonAccessibilityService : AccessibilityService() {
         }
 
         if (rota.isEmpty()) {
+
             Toast.makeText(
                 applicationContext,
                 "Rota vazia",
@@ -57,7 +69,7 @@ class FlateonAccessibilityService : AccessibilityService() {
 
         Toast.makeText(
             applicationContext,
-            "TESTE: procurando joystick",
+            "Joystick encontrado",
             Toast.LENGTH_SHORT
         ).show()
 
@@ -115,22 +127,14 @@ class FlateonAccessibilityService : AccessibilityService() {
         duracao: Long
     ) {
 
-        val windowManager =
-            getSystemService(WINDOW_SERVICE) as WindowManager
+        val inicioX = joystickX
+        val inicioY = joystickY
 
-        val metrics = DisplayMetrics()
-
-        @Suppress("DEPRECATION")
-        windowManager.defaultDisplay.getRealMetrics(metrics)
-
-        val largura = metrics.widthPixels.toFloat()
-        val altura = metrics.heightPixels.toFloat()
-
-        // Joystick aproximado no canto inferior esquerdo.
-        val inicioX = largura * 0.12f
-        val inicioY = altura * 0.82f
-
-        val distancia = 120f
+        /*
+         * Distância que o dedo virtual
+         * vai deslocar o joystick.
+         */
+        val distancia = 100f
 
         val fimX: Float
         val fimY: Float
@@ -164,8 +168,15 @@ class FlateonAccessibilityService : AccessibilityService() {
 
         val path = Path()
 
-        path.moveTo(inicioX, inicioY)
-        path.lineTo(fimX, fimY)
+        path.moveTo(
+            inicioX,
+            inicioY
+        )
+
+        path.lineTo(
+            fimX,
+            fimY
+        )
 
         val gesto = GestureDescription.Builder()
             .addStroke(
@@ -209,6 +220,7 @@ class FlateonAccessibilityService : AccessibilityService() {
         handler.removeCallbacksAndMessages(null)
 
         executando = false
+
         instancia = null
 
         super.onDestroy()

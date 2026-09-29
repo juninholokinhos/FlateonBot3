@@ -3,10 +3,10 @@ package com.flateonbot
 import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.GestureDescription
 import android.graphics.Path
-import android.view.accessibility.AccessibilityEvent
-import android.widget.Toast
 import android.os.Handler
 import android.os.Looper
+import android.view.accessibility.AccessibilityEvent
+import android.widget.Toast
 
 class FlateonAccessibilityService : AccessibilityService() {
 
@@ -20,13 +20,10 @@ class FlateonAccessibilityService : AccessibilityService() {
     private var executando = false
 
     /*
-     * POSIÇÃO DO JOYSTICK IDENTIFICADA NA IMAGEM
+     * Centro aproximado do joystick
+     * identificado na imagem do jogo.
      *
-     * Tela: 1600 x 720
-     * Centro aproximado do joystick:
-     *
-     * X = 160
-     * Y = 565
+     * Tela da imagem: 1600 x 720
      */
     private val joystickX = 160f
     private val joystickY = 565f
@@ -69,7 +66,7 @@ class FlateonAccessibilityService : AccessibilityService() {
 
         Toast.makeText(
             applicationContext,
-            "Joystick encontrado",
+            "Bot iniciando movimentação",
             Toast.LENGTH_SHORT
         ).show()
 
@@ -118,7 +115,7 @@ class FlateonAccessibilityService : AccessibilityService() {
                     indice + 1
                 )
             },
-            movimento.duracao + 100L
+            movimento.duracao + 200L
         )
     }
 
@@ -130,10 +127,6 @@ class FlateonAccessibilityService : AccessibilityService() {
         val inicioX = joystickX
         val inicioY = joystickY
 
-        /*
-         * Distância que o dedo virtual
-         * vai deslocar o joystick.
-         */
         val distancia = 100f
 
         val fimX: Float
@@ -190,7 +183,28 @@ class FlateonAccessibilityService : AccessibilityService() {
 
         dispatchGesture(
             gesto,
-            null,
+            object : GestureResultCallback() {
+
+                override fun onCompleted(
+                    gestureDescription: GestureDescription?
+                ) {
+                    Toast.makeText(
+                        applicationContext,
+                        "GESTO CONCLUÍDO: $direcao",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+                override fun onCancelled(
+                    gestureDescription: GestureDescription?
+                ) {
+                    Toast.makeText(
+                        applicationContext,
+                        "GESTO CANCELADO: $direcao",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            },
             null
         )
     }

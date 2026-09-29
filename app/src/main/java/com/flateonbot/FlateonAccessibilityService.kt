@@ -5,6 +5,7 @@ import android.accessibilityservice.GestureDescription
 import android.graphics.Path
 import android.os.Handler
 import android.os.Looper
+import android.util.DisplayMetrics
 import android.view.accessibility.AccessibilityEvent
 import android.widget.Toast
 
@@ -18,10 +19,6 @@ class FlateonAccessibilityService : AccessibilityService() {
     private val handler = Handler(Looper.getMainLooper())
 
     private var executando = false
-
-    // POSIÇÃO DE TESTE
-    private val testeX = 180f
-    private val testeY = 1500f
 
     override fun onServiceConnected() {
         super.onServiceConnected()
@@ -59,7 +56,7 @@ class FlateonAccessibilityService : AccessibilityService() {
 
         Toast.makeText(
             applicationContext,
-            "TESTE: enviando toque para a tela",
+            "TESTE: procurando joystick",
             Toast.LENGTH_SHORT
         ).show()
 
@@ -117,8 +114,24 @@ class FlateonAccessibilityService : AccessibilityService() {
         duracao: Long
     ) {
 
-        val inicioX = testeX
-        val inicioY = testeY
+        val metrics = DisplayMetrics()
+
+        @Suppress("DEPRECATION")
+        windowManager.defaultDisplay.getRealMetrics(metrics)
+
+        val largura = metrics.widthPixels.toFloat()
+        val altura = metrics.heightPixels.toFloat()
+
+        /*
+         * O joystick fica no canto inferior esquerdo.
+         *
+         * Usamos uma posição relativa à tela:
+         * 12% da largura
+         * 82% da altura
+         */
+
+        val inicioX = largura * 0.12f
+        val inicioY = altura * 0.82f
 
         val distancia = 120f
 

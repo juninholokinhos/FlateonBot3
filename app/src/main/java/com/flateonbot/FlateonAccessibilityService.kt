@@ -1,30 +1,8 @@
-package com.flateonbot
+<?xml version="1.0" encoding="utf-8"?>
 
-import android.accessibilityservice.AccessibilityService
-import android.view.accessibility.AccessibilityEvent
-
-class FlateonAccessibilityService : AccessibilityService() {
-
-    companion object {
-        var instancia: FlateonAccessibilityService? = null
-            private set
-    }
-
-    override fun onServiceConnected() {
-        super.onServiceConnected()
-        instancia = this
-    }
-
-    override fun onAccessibilityEvent(event: AccessibilityEvent?) {
-        // Os comandos do bot serão adicionados aqui posteriormente.
-    }
-
-    override fun onInterrupt() {
-        instancia = null
-    }
-
-    override fun onDestroy() {
-        instancia = null
-        super.onDestroy()
-    }
-}
+<accessibility-service
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:accessibilityEventTypes="typeAllMask"
+    android:accessibilityFeedbackType="feedbackGeneric"
+    android:canRetrieveWindowContent="true"
+    android:notificationTimeout="100" />

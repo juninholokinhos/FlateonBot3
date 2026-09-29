@@ -19,17 +19,9 @@ class FlateonAccessibilityService : AccessibilityService() {
 
     private var executando = false
 
-    /*
-     * Posição provisória do joystick.
-     *
-     * Estes valores NÃO devem ser usados ainda
-     * como posição definitiva.
-     *
-     * Depois vamos descobrir a posição real
-     * do joystick no Flateon RPG.
-     */
-    private val joystickX = 200f
-    private val joystickY = 700f
+    // POSIÇÃO DE TESTE
+    private val testeX = 200f
+    private val testeY = 700f
 
     override fun onServiceConnected() {
         super.onServiceConnected()
@@ -54,7 +46,6 @@ class FlateonAccessibilityService : AccessibilityService() {
         }
 
         if (rota.isEmpty()) {
-
             Toast.makeText(
                 applicationContext,
                 "Rota vazia",
@@ -65,6 +56,12 @@ class FlateonAccessibilityService : AccessibilityService() {
         }
 
         executando = true
+
+        Toast.makeText(
+            applicationContext,
+            "TESTE: enviando toque para a tela",
+            Toast.LENGTH_SHORT
+        ).show()
 
         executarMovimento(rota, 0)
     }
@@ -93,7 +90,16 @@ class FlateonAccessibilityService : AccessibilityService() {
 
         val movimento = rota[indice]
 
-        executarDirecao(movimento.direcao, movimento.duracao)
+        Toast.makeText(
+            applicationContext,
+            "Movimento: ${movimento.direcao}",
+            Toast.LENGTH_SHORT
+        ).show()
+
+        executarDirecao(
+            movimento.direcao,
+            movimento.duracao
+        )
 
         handler.postDelayed(
             {
@@ -111,8 +117,8 @@ class FlateonAccessibilityService : AccessibilityService() {
         duracao: Long
     ) {
 
-        val inicioX = joystickX
-        val inicioY = joystickY
+        val inicioX = testeX
+        val inicioY = testeY
 
         val distancia = 120f
 
@@ -149,7 +155,6 @@ class FlateonAccessibilityService : AccessibilityService() {
         val path = Path()
 
         path.moveTo(inicioX, inicioY)
-
         path.lineTo(fimX, fimY)
 
         val gesto = GestureDescription.Builder()

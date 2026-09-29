@@ -15,7 +15,6 @@ class FlateonAccessibilityService : AccessibilityService() {
 
     private var executando = false
 
-    // Centro aproximado do joystick na imagem enviada.
     private val joystickX = 160f
     private val joystickY = 565f
 
@@ -50,68 +49,27 @@ class FlateonAccessibilityService : AccessibilityService() {
 
         executando = true
 
-        val movimento = rota[0]
-
         Toast.makeText(
             applicationContext,
-            "TESTE INICIADO: ${movimento.direcao}",
+            "TESTE DE GESTO INICIADO",
             Toast.LENGTH_LONG
         ).show()
 
-        testarGesto(
-            movimento.direcao,
-            movimento.duracao
-        )
+        testarGesto()
     }
 
-    private fun testarGesto(
-        direcao: String,
-        duracao: Long
-    ) {
+    private fun testarGesto() {
 
         val inicioX = joystickX
         val inicioY = joystickY
 
-        val distancia = 100f
-
-        val fimX: Float
-        val fimY: Float
-
-        when (direcao) {
-
-            "CIMA" -> {
-                fimX = inicioX
-                fimY = inicioY - distancia
-            }
-
-            "BAIXO" -> {
-                fimX = inicioX
-                fimY = inicioY + distancia
-            }
-
-            "ESQUERDA" -> {
-                fimX = inicioX - distancia
-                fimY = inicioY
-            }
-
-            "DIREITA" -> {
-                fimX = inicioX + distancia
-                fimY = inicioY
-            }
-
-            else -> {
-
-                executando = false
-
-                Toast.makeText(
-                    applicationContext,
-                    "DIREÇÃO INVÁLIDA",
-                    Toast.LENGTH_LONG
-                ).show()
-
-                return
-            }
-        }
+        /*
+         * Teste simples:
+         * começa no centro aproximado do joystick
+         * e desliza lentamente para a direita.
+         */
+        val fimX = inicioX + 100f
+        val fimY = inicioY
 
         val path = Path()
 
@@ -130,7 +88,7 @@ class FlateonAccessibilityService : AccessibilityService() {
                 GestureDescription.StrokeDescription(
                     path,
                     0,
-                    duracao
+                    2000L
                 )
             )
             .build()
@@ -147,7 +105,7 @@ class FlateonAccessibilityService : AccessibilityService() {
 
                     Toast.makeText(
                         applicationContext,
-                        "GESTO CONCLUÍDO: $direcao",
+                        "GESTO CONCLUÍDO",
                         Toast.LENGTH_LONG
                     ).show()
                 }
@@ -160,7 +118,7 @@ class FlateonAccessibilityService : AccessibilityService() {
 
                     Toast.makeText(
                         applicationContext,
-                        "GESTO CANCELADO: $direcao",
+                        "GESTO CANCELADO",
                         Toast.LENGTH_LONG
                     ).show()
                 }

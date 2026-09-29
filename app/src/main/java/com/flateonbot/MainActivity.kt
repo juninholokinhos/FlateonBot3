@@ -1,12 +1,15 @@
 package com.flateonbot
 
 import android.app.Activity
+import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.view.Gravity
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
+import org.json.JSONArray
+import org.json.JSONObject
 
 class MainActivity : Activity() {
 
@@ -18,8 +21,13 @@ class MainActivity : Activity() {
 
     private var gravando = false
 
+    private val nomeArquivo = "rotas.json"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        carregarRotas()
+
         mostrarTelaPrincipal()
     }
 
@@ -157,6 +165,8 @@ class MainActivity : Activity() {
             }
 
             rotasSalvas.add(novaRota)
+
+            salvarRotas()
 
             gravando = false
 
@@ -325,5 +335,73 @@ class MainActivity : Activity() {
         layout.addView(voltar)
 
         setContentView(layout)
+    }
+
+    private fun salvarRotas() {
+
+        val jsonRotas = JSONArray()
+
+        rotasSalvas.forEach { rota ->
+
+            val jsonRota = JSONArray()
+
+            rota.forEach { movimento ->
+
+                val objeto = JSONObject()
+
+                objeto.put("direcao", movimento.direcao)
+                objeto.put("duracao", movimento.duracao)
+
+                jsonRota.put(objeto)
+            }
+
+            jsonRotas.put(jsonRota)
+        }
+
+        openFileOutput(nomeArquivo, Context.MODE_PRIVATE).use {
+            it.write(jsonRotas.toString().toByteArray())
+        }
+    }
+
+    private fun carregarRotas() {
+
+        try {
+
+            val arquivo = openFileInput(nomeArquivo)
+
+            val texto = arquivo.bufferedReader().use {
+                it.readText()
+            }
+
+            arquivo.close()
+
+            val jsonRotas = JSONArray(texto)
+
+            rotasSalvas.clear()
+
+            for (i in 0 until jsonRotas.length()) {
+
+                val jsonRota = jsonRotas.getJSONArray(i)
+
+                val rota = ArrayList<MovimentoRota>()
+
+                for (j in 0 until jsonRota.length()) {
+
+                    val objeto = jsonRota.getJSONObject(j)
+
+                    rota.add(
+                        MovimentoRota(
+                            direcao = objeto.getString("direcao"),
+                            duracao = objeto.getLong("duracao")
+                        )
+                    )
+                }
+
+                rotasSalvas.add(rota)
+            }
+
+        } catch (_: Exception) {
+            rotasSalvas.clear()
+        }
     }
 }

@@ -11,8 +11,10 @@ import android.widget.TextView
 class MainActivity : Activity() {
 
     private lateinit var status: TextView
+    private lateinit var listaMovimentos: TextView
+
+    private val movimentos = ArrayList<MovimentoRota>()
     private var gravando = false
-    private var movimentos = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,7 +65,7 @@ class MainActivity : Activity() {
         val layout = LinearLayout(this)
         layout.orientation = LinearLayout.VERTICAL
         layout.gravity = Gravity.CENTER
-        layout.setPadding(40, 40, 40, 40)
+        layout.setPadding(30, 30, 30, 30)
 
         val titulo = TextView(this)
         titulo.text = "CRIAR ROTA"
@@ -75,13 +77,31 @@ class MainActivity : Activity() {
         status.text = "Pronto para gravar"
         status.textSize = 18f
         status.gravity = Gravity.CENTER
-        status.setPadding(0, 30, 0, 30)
+        status.setPadding(0, 20, 0, 20)
+
+        listaMovimentos = TextView(this)
+        listaMovimentos.text = "Nenhum movimento registrado"
+        listaMovimentos.textSize = 16f
+        listaMovimentos.gravity = Gravity.CENTER
+        listaMovimentos.setPadding(0, 10, 0, 20)
+
+        val cima = Button(this)
+        cima.text = "⬆ CIMA"
+
+        val baixo = Button(this)
+        baixo.text = "⬇ BAIXO"
+
+        val esquerda = Button(this)
+        esquerda.text = "⬅ ESQUERDA"
+
+        val direita = Button(this)
+        direita.text = "➡ DIREITA"
 
         val gravar = Button(this)
-        gravar.text = "🔴 GRAVAR ROTA"
+        gravar.text = "🔴 GRAVAR"
 
         val pararGravacao = Button(this)
-        pararGravacao.text = "⏹ PARAR GRAVAÇÃO"
+        pararGravacao.text = "⏹ PARAR"
 
         val salvar = Button(this)
         salvar.text = "💾 SALVAR ROTA"
@@ -91,18 +111,35 @@ class MainActivity : Activity() {
 
         gravar.setOnClickListener {
             gravando = true
-            movimentos = 0
-            status.text = "🔴 GRAVANDO...\nMovimentos: $movimentos"
+            movimentos.clear()
+            atualizarLista()
+            status.text = "🔴 GRAVANDO"
         }
 
         pararGravacao.setOnClickListener {
             gravando = false
-            status.text = "⏹ Gravação parada\nMovimentos: $movimentos"
+            status.text = "⏹ GRAVAÇÃO PARADA"
+        }
+
+        cima.setOnClickListener {
+            adicionarMovimento("CIMA")
+        }
+
+        baixo.setOnClickListener {
+            adicionarMovimento("BAIXO")
+        }
+
+        esquerda.setOnClickListener {
+            adicionarMovimento("ESQUERDA")
+        }
+
+        direita.setOnClickListener {
+            adicionarMovimento("DIREITA")
         }
 
         salvar.setOnClickListener {
             gravando = false
-            status.text = "💾 Rota salva!\nMovimentos: $movimentos"
+            status.text = "💾 ROTA SALVA\n${movimentos.size} movimentos"
         }
 
         voltar.setOnClickListener {
@@ -111,11 +148,53 @@ class MainActivity : Activity() {
 
         layout.addView(titulo)
         layout.addView(status)
+        layout.addView(listaMovimentos)
+        layout.addView(cima)
+        layout.addView(baixo)
+        layout.addView(esquerda)
+        layout.addView(direita)
         layout.addView(gravar)
         layout.addView(pararGravacao)
         layout.addView(salvar)
         layout.addView(voltar)
 
         setContentView(layout)
+    }
+
+    private fun adicionarMovimento(direcao: String) {
+
+        if (!gravando) {
+            status.text = "Pressione GRAVAR primeiro"
+            return
+        }
+
+        movimentos.add(
+            MovimentoRota(
+                direcao = direcao,
+                duracao = 1000
+            )
+        )
+
+        atualizarLista()
+    }
+
+    private fun atualizarLista() {
+
+        if (movimentos.isEmpty()) {
+            listaMovimentos.text = "Nenhum movimento registrado"
+            return
+        }
+
+        val texto = StringBuilder()
+
+        movimentos.forEachIndexed { index, movimento ->
+            texto.append("${index + 1}. ")
+            texto.append(movimento.direcao)
+            texto.append(" - ")
+            texto.append(movimento.duracao)
+            texto.append(" ms\n")
+        }
+
+        listaMovimentos.text = texto.toString()
     }
 }

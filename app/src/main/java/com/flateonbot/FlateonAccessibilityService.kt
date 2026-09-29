@@ -20,8 +20,8 @@ class FlateonAccessibilityService : AccessibilityService() {
     private var executando = false
 
     // POSIÇÃO DE TESTE
-    private val testeX = 200f
-    private val testeY = 700f
+    private val testeX = 180f
+    private val testeY = 1500f
 
     override fun onServiceConnected() {
         super.onServiceConnected()

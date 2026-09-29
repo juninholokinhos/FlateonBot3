@@ -6,6 +6,7 @@ import android.graphics.Path
 import android.os.Handler
 import android.os.Looper
 import android.util.DisplayMetrics
+import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
 import android.widget.Toast
 
@@ -114,6 +115,9 @@ class FlateonAccessibilityService : AccessibilityService() {
         duracao: Long
     ) {
 
+        val windowManager =
+            getSystemService(WINDOW_SERVICE) as WindowManager
+
         val metrics = DisplayMetrics()
 
         @Suppress("DEPRECATION")
@@ -122,14 +126,7 @@ class FlateonAccessibilityService : AccessibilityService() {
         val largura = metrics.widthPixels.toFloat()
         val altura = metrics.heightPixels.toFloat()
 
-        /*
-         * O joystick fica no canto inferior esquerdo.
-         *
-         * Usamos uma posição relativa à tela:
-         * 12% da largura
-         * 82% da altura
-         */
-
+        // Joystick aproximado no canto inferior esquerdo.
         val inicioX = largura * 0.12f
         val inicioY = altura * 0.82f
 

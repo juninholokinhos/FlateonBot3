@@ -1,4 +1,3 @@
-```kotlin
 package com.flateonbot
 
 import android.app.Activity
@@ -328,4 +327,3 @@ class MainActivity : Activity() {
         setContentView(layout)
     }
 }
-```

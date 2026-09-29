@@ -8,6 +8,7 @@ import android.view.Gravity
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -323,6 +324,47 @@ class MainActivity : Activity() {
 
         lista.text = texto.toString()
 
+        val iniciar = Button(this)
+        iniciar.text = "▶ INICIAR ROTA"
+
+        iniciar.setOnClickListener {
+
+            val servico = FlateonAccessibilityService.instancia
+
+            if (servico == null) {
+
+                Toast.makeText(
+                    this,
+                    "Ative a acessibilidade do FlateonBot primeiro",
+                    Toast.LENGTH_LONG
+                ).show()
+
+            } else {
+
+                servico.executarRota(rota)
+
+                Toast.makeText(
+                    this,
+                    "Rota iniciada",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+
+        val parar = Button(this)
+        parar.text = "■ PARAR ROTA"
+
+        parar.setOnClickListener {
+
+            FlateonAccessibilityService.instancia?.pararRota()
+
+            Toast.makeText(
+                this,
+                "Comando de parada enviado",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+
         val voltar = Button(this)
         voltar.text = "VOLTAR"
 
@@ -332,6 +374,8 @@ class MainActivity : Activity() {
 
         layout.addView(titulo)
         layout.addView(lista)
+        layout.addView(iniciar)
+        layout.addView(parar)
         layout.addView(voltar)
 
         setContentView(layout)

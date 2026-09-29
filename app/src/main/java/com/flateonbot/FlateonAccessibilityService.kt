@@ -2,28 +2,29 @@ package com.flateonbot
 
 import android.accessibilityservice.AccessibilityService
 import android.view.accessibility.AccessibilityEvent
-import android.widget.Toast
 
 class FlateonAccessibilityService : AccessibilityService() {
 
+    companion object {
+        var instancia: FlateonAccessibilityService? = null
+            private set
+    }
+
     override fun onServiceConnected() {
         super.onServiceConnected()
-
-        Toast.makeText(
-            applicationContext,
-            "FLATEON BOT CONECTADO!",
-            Toast.LENGTH_LONG
-        ).show()
+        instancia = this
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
+        // Os comandos do bot serão adicionados aqui posteriormente.
     }
 
     override fun onInterrupt() {
-        Toast.makeText(
-            applicationContext,
-            "FLATEON BOT INTERROMPIDO!",
-            Toast.LENGTH_LONG
-        ).show()
+        instancia = null
+    }
+
+    override fun onDestroy() {
+        instancia = null
+        super.onDestroy()
     }
 }

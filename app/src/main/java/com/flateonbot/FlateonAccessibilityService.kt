@@ -15,9 +15,6 @@ class FlateonAccessibilityService : AccessibilityService() {
 
     private var executando = false
 
-    private val joystickX = 160f
-    private val joystickY = 565f
-
     override fun onServiceConnected() {
         super.onServiceConnected()
         instancia = this
@@ -38,57 +35,36 @@ class FlateonAccessibilityService : AccessibilityService() {
             return
         }
 
-        if (rota.isEmpty()) {
-            Toast.makeText(
-                applicationContext,
-                "Rota vazia",
-                Toast.LENGTH_LONG
-            ).show()
-            return
-        }
-
         executando = true
 
         Toast.makeText(
             applicationContext,
-            "TESTE DE GESTO INICIADO",
+            "TESTE: toque curto iniciado",
             Toast.LENGTH_LONG
         ).show()
 
-        testarGesto()
+        testarToque()
     }
 
-    private fun testarGesto() {
-
-        val inicioX = joystickX
-        val inicioY = joystickY
+    private fun testarToque() {
 
         /*
-         * Teste simples:
-         * começa no centro aproximado do joystick
-         * e desliza lentamente para a direita.
+         * Toque simples no centro aproximado da tela.
+         * Não depende do joystick.
          */
-        val fimX = inicioX + 100f
-        val fimY = inicioY
+        val x = 800f
+        val y = 360f
 
         val path = Path()
 
-        path.moveTo(
-            inicioX,
-            inicioY
-        )
-
-        path.lineTo(
-            fimX,
-            fimY
-        )
+        path.moveTo(x, y)
 
         val gesto = GestureDescription.Builder()
             .addStroke(
                 GestureDescription.StrokeDescription(
                     path,
                     0,
-                    2000L
+                    100L
                 )
             )
             .build()
@@ -105,7 +81,7 @@ class FlateonAccessibilityService : AccessibilityService() {
 
                     Toast.makeText(
                         applicationContext,
-                        "GESTO CONCLUÍDO",
+                        "TOQUE CONCLUÍDO",
                         Toast.LENGTH_LONG
                     ).show()
                 }
@@ -118,7 +94,7 @@ class FlateonAccessibilityService : AccessibilityService() {
 
                     Toast.makeText(
                         applicationContext,
-                        "GESTO CANCELADO",
+                        "TOQUE CANCELADO",
                         Toast.LENGTH_LONG
                     ).show()
                 }
@@ -132,7 +108,7 @@ class FlateonAccessibilityService : AccessibilityService() {
 
             Toast.makeText(
                 applicationContext,
-                "ANDROID RECUSOU O GESTO",
+                "ANDROID RECUSOU O TOQUE",
                 Toast.LENGTH_LONG
             ).show()
         }

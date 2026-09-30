@@ -39,32 +39,36 @@ class FlateonAccessibilityService : AccessibilityService() {
 
         Toast.makeText(
             applicationContext,
-            "TESTE: toque curto iniciado",
+            "TESTE: arrasto do joystick",
             Toast.LENGTH_LONG
         ).show()
 
-        testarToque()
+        testarArrasto()
     }
 
-    private fun testarToque() {
+    private fun testarArrasto() {
 
-        /*
-         * Toque simples no centro aproximado da tela.
-         * Não depende do joystick.
-         */
-        val x = 800f
-        val y = 360f
+        // Tela do jogo em paisagem: aproximadamente 1600 x 720
+        // Joystick: aproximadamente 160 x 565
+
+        val inicioX = 160f
+        val inicioY = 565f
+
+        val fimX = 260f
+        val fimY = 565f
 
         val path = Path()
 
-        path.moveTo(x, y)
+        path.moveTo(inicioX, inicioY)
+
+        path.lineTo(fimX, fimY)
 
         val gesto = GestureDescription.Builder()
             .addStroke(
                 GestureDescription.StrokeDescription(
                     path,
                     0,
-                    100L
+                    500L
                 )
             )
             .build()
@@ -81,7 +85,7 @@ class FlateonAccessibilityService : AccessibilityService() {
 
                     Toast.makeText(
                         applicationContext,
-                        "TOQUE CONCLUÍDO",
+                        "ARRASTO CONCLUÍDO",
                         Toast.LENGTH_LONG
                     ).show()
                 }
@@ -94,7 +98,7 @@ class FlateonAccessibilityService : AccessibilityService() {
 
                     Toast.makeText(
                         applicationContext,
-                        "TOQUE CANCELADO",
+                        "ARRASTO CANCELADO",
                         Toast.LENGTH_LONG
                     ).show()
                 }
@@ -108,7 +112,7 @@ class FlateonAccessibilityService : AccessibilityService() {
 
             Toast.makeText(
                 applicationContext,
-                "ANDROID RECUSOU O TOQUE",
+                "ANDROID RECUSOU O ARRASTO",
                 Toast.LENGTH_LONG
             ).show()
         }

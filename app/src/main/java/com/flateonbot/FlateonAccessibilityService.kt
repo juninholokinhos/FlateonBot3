@@ -39,32 +39,29 @@ class FlateonAccessibilityService : AccessibilityService() {
 
         Toast.makeText(
             applicationContext,
-            "TESTE: micro arrasto",
+            "TESTE: toque no joystick",
             Toast.LENGTH_LONG
         ).show()
 
-        testarMicroArrasto()
+        testarToqueJoystick()
     }
 
-    private fun testarMicroArrasto() {
+    private fun testarToqueJoystick() {
 
-        val inicioX = 160f
-        val inicioY = 565f
-
-        val fimX = 180f
-        val fimY = 565f
+        // Ponto aproximado do centro do joystick
+        val x = 160f
+        val y = 565f
 
         val path = Path()
 
-        path.moveTo(inicioX, inicioY)
-        path.lineTo(fimX, fimY)
+        path.moveTo(x, y)
 
         val gesto = GestureDescription.Builder()
             .addStroke(
                 GestureDescription.StrokeDescription(
                     path,
                     0,
-                    100L
+                    1000L
                 )
             )
             .build()
@@ -81,7 +78,7 @@ class FlateonAccessibilityService : AccessibilityService() {
 
                     Toast.makeText(
                         applicationContext,
-                        "MICRO ARRASTO CONCLUÍDO",
+                        "TOQUE NO JOYSTICK CONCLUÍDO",
                         Toast.LENGTH_LONG
                     ).show()
                 }
@@ -94,7 +91,7 @@ class FlateonAccessibilityService : AccessibilityService() {
 
                     Toast.makeText(
                         applicationContext,
-                        "MICRO ARRASTO CANCELADO",
+                        "TOQUE NO JOYSTICK CANCELADO",
                         Toast.LENGTH_LONG
                     ).show()
                 }
@@ -108,7 +105,7 @@ class FlateonAccessibilityService : AccessibilityService() {
 
             Toast.makeText(
                 applicationContext,
-                "ANDROID RECUSOU O GESTO",
+                "ANDROID RECUSOU O TOQUE",
                 Toast.LENGTH_LONG
             ).show()
         }

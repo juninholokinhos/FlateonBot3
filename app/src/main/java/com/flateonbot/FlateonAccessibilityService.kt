@@ -39,28 +39,24 @@ class FlateonAccessibilityService : AccessibilityService() {
 
         Toast.makeText(
             applicationContext,
-            "TESTE: arrasto do joystick",
+            "TESTE: micro arrasto",
             Toast.LENGTH_LONG
         ).show()
 
-        testarArrasto()
+        testarMicroArrasto()
     }
 
-    private fun testarArrasto() {
-
-        // Tela do jogo em paisagem: aproximadamente 1600 x 720
-        // Joystick: aproximadamente 160 x 565
+    private fun testarMicroArrasto() {
 
         val inicioX = 160f
         val inicioY = 565f
 
-        val fimX = 260f
+        val fimX = 180f
         val fimY = 565f
 
         val path = Path()
 
         path.moveTo(inicioX, inicioY)
-
         path.lineTo(fimX, fimY)
 
         val gesto = GestureDescription.Builder()
@@ -68,7 +64,7 @@ class FlateonAccessibilityService : AccessibilityService() {
                 GestureDescription.StrokeDescription(
                     path,
                     0,
-                    500L
+                    100L
                 )
             )
             .build()
@@ -85,7 +81,7 @@ class FlateonAccessibilityService : AccessibilityService() {
 
                     Toast.makeText(
                         applicationContext,
-                        "ARRASTO CONCLUÍDO",
+                        "MICRO ARRASTO CONCLUÍDO",
                         Toast.LENGTH_LONG
                     ).show()
                 }
@@ -98,7 +94,7 @@ class FlateonAccessibilityService : AccessibilityService() {
 
                     Toast.makeText(
                         applicationContext,
-                        "ARRASTO CANCELADO",
+                        "MICRO ARRASTO CANCELADO",
                         Toast.LENGTH_LONG
                     ).show()
                 }
@@ -112,7 +108,7 @@ class FlateonAccessibilityService : AccessibilityService() {
 
             Toast.makeText(
                 applicationContext,
-                "ANDROID RECUSOU O ARRASTO",
+                "ANDROID RECUSOU O GESTO",
                 Toast.LENGTH_LONG
             ).show()
         }
